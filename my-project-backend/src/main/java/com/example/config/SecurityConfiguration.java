@@ -59,7 +59,8 @@ public class SecurityConfiguration {
         // 资源授权（使用 AntPathRequestMatcher 明确为 Ant 风格）
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/h2/h2-console/**")).permitAll()
@@ -67,14 +68,14 @@ public class SecurityConfiguration {
         );
         // 表单登录（用于兼容旧式登录端点），可根据实际改为 JWT 登录处理
         http.formLogin(form -> form
-                .loginProcessingUrl("/api/auth/login")
+                .loginProcessingUrl("/auth/login")
                 .failureHandler(this::handleProcess)
                 .successHandler(this::handleProcess)
                 .permitAll()
         );
         // 注销
         http.logout(logout -> logout
-                .logoutUrl("/api/auth/logout")
+                .logoutUrl("/auth/logout")
                 .logoutSuccessHandler(this::onLogoutSuccess)
         );
         // 异常处理
