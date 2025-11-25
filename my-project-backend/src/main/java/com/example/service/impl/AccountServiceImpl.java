@@ -103,11 +103,11 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         String password = passwordEncoder.encode(info.getPassword());
         Account account = new Account(null, info.getUsername(),
                 password, email, Const.ROLE_DEFAULT, new Date());
-        if(!this.save(account)) {
-            return "内部错误，注册失败";
-        } else {
+        if (this.save(account)) {
             this.deleteEmailVerifyCode(email);
             return null;
+        } else {
+            return "内部错误，注册失败";
         }
     }
 
@@ -139,8 +139,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         String email = info.getEmail();
         String code = this.getEmailVerifyCode(email);
         if(code == null) return "请先获取验证码";
-        if(!code.equals(info.getCode())) return "验证码错误，请重新输入";
-        return null;
+        return code.equals(info.getCode()) ? null : "验证码错误，请重新输入";
     }
 
     /**
